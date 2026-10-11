@@ -1,0 +1,19 @@
+# dependencies / build output
+node_modules/
+web/dist/
+__pycache__/
+*.pyc
+*.blend1
+
+# local working material (reference footage, captures, scratch) - not part of the project
+*.mp4
+ref/
+shots/
+previews/
+tools/scratch/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,112 @@
+/* 1rem == 1/96 of the viewport width (16px at 1536px), so the overlay keeps the
+   proportions of the reference recording at any window size. */
+html { font-size: min(calc(100vw / 96), calc(100vh / 50)); }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #dfe7ef; }
+body {
+  font-family: 'Inter', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  color: #1f2c35;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+html[lang='zh'] body { font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif; }
+#gl { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; outline: none; touch-action: none; }
+#hud { position: fixed; inset: 0; pointer-events: none; }
+#hud button, #hud .hs, #hud .panel { pointer-events: auto; }
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; padding: 0; }
+
+/* ---------------------------------------------------------------- glass */
+.glass {
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.62), rgba(240, 245, 249, 0.42));
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter: blur(16px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: 0 0.6rem 1.8rem rgba(38, 64, 92, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+/* ---------------------------------------------------------------- brand / lang */
+.brand { position: absolute; left: 1.5rem; top: 1.15rem; height: 1.7rem; display: flex; align-items: center; gap: 0.35rem; }
+.brand svg { height: 1.55rem; width: auto; }
+.brand b { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; color: #1b5f8a; }
+.brand b span { font-weight: 400; color: #5a9fc6; }
+.lang {
+  position: absolute; right: 1.6rem; top: 1.1rem; height: 1.9rem; padding: 0 0.9rem; border-radius: 1rem;
+  font-size: 0.66rem; letter-spacing: 0.04em; color: #4b5964;
+}
+.lang em { font-style: normal; opacity: 0.55; }
+.lang .on { opacity: 1; color: #1f2d36; }
+
+/* ---------------------------------------------------------------- panel */
+.panel {
+  position: absolute; left: 6.2rem; top: 12.1rem; width: 17.9rem; box-sizing: border-box;
+  padding: 1.35rem 1.3rem 1.25rem; border-radius: 1.3rem;
+  transition: opacity 0.45s ease, transform 0.55s cubic-bezier(.2, .7, .2, 1), filter 0.45s ease;
+}
+.panel.wide { width: 22.4rem; top: 14.3rem; padding-right: 2.2rem; }
+.panel.right { left: auto; right: 14.7rem; }
+.panel.hidden { opacity: 0; transform: translateY(0.8rem); filter: blur(6px); pointer-events: none !important; }
+.panel .close { position: absolute; right: 1.35rem; top: 1.2rem; width: 1.2rem; height: 1.2rem; color: #5b6872; font-size: 0.9rem; line-height: 1.2rem; text-align: center; }
+.panel .eyebrow { font-size: 0.6rem; line-height: 0.95rem; letter-spacing: 0.14em; font-weight: 600; color: #34587c; text-transform: uppercase; padding-right: 1.6rem; }
+.panel h1 { margin: 0.95rem 0 0.95rem; font-size: 1.86rem; line-height: 2.47rem; font-weight: 500; letter-spacing: -0.012em; color: #1d2b34; }
+.panel.compact h1 { margin: 0.9rem 0 0.8rem; }
+.panel p { margin: 0; font-size: 0.79rem; line-height: 1.45rem; color: #4a5762; }
+.panel .cta {
+  margin-top: 1.05rem; height: 2.45rem; padding: 0 0.95rem; border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.82); box-shadow: 0 0.35rem 1rem rgba(32, 62, 92, 0.08);
+  font-size: 0.72rem; color: #273641; display: inline-flex; align-items: center; gap: 0.35rem;
+}
+.panel .cta:hover { background: #fff; }
+.panel .link { display: inline-block; margin-top: 1.25rem; font-size: 0.68rem; color: #586670; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(80, 100, 115, 0.18); }
+.panel .foot { margin-top: 1.05rem; font-size: 0.6rem; line-height: 1.12rem; color: #95a1ab; letter-spacing: 0.015em; }
+html[lang='zh'] .panel h1 { font-size: 1.9rem; line-height: 2.6rem; letter-spacing: 0.02em; }
+html[lang='zh'] .panel p { font-size: 0.8rem; line-height: 1.5rem; }
+
+/* ---------------------------------------------------------------- hotspots */
+#hotspots { position: absolute; inset: 0; overflow: hidden; }
+.hs { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 0.45rem; white-space: nowrap; transition: opacity 0.35s ease; will-change: transform; }
+.hs.hide { opacity: 0; pointer-events: none !important; }
+.hs .dot { width: 0.85rem; height: 0.85rem; border-radius: 50%; flex: none; position: relative;
+  background: radial-gradient(circle, #ffffff 0 22%, rgba(80, 170, 220, 0.95) 24% 38%, rgba(140, 205, 240, 0.35) 40% 100%);
+  box-shadow: 0 0 0.6rem rgba(120, 200, 255, 0.8); }
+.hs .dot::after { content: ''; position: absolute; inset: -0.3rem; border-radius: 50%; border: 1px solid rgba(150, 210, 245, 0.7); animation: ping 2.4s ease-out infinite; }
+@keyframes ping { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(1.6); opacity: 0; } }
+.hs .pill { height: 1.95rem; padding: 0 0.85rem; border-radius: 1rem; display: flex; align-items: center; gap: 0.45rem; font-size: 0.66rem; color: #2a3a45; }
+.hs .pill i { font-style: normal; font-size: 0.55rem; color: #9aa7b1; }
+.hs .pill:hover { background: rgba(255, 255, 255, 0.92); }
+.hs.flip { flex-direction: row-reverse; }
+.hs.screen .pill { height: 2.3rem; padding: 0 1.1rem; font-size: 0.78rem; border-radius: 1.15rem; background: rgba(214, 233, 245, 0.62); }
+.hs.screen .dot { width: 0.6rem; height: 0.6rem; }
+.hs.tag .pill { font-size: 0.6rem; letter-spacing: 0.04em; height: 1.8rem; background: rgba(240, 243, 246, 0.55); }
+
+/* ---------------------------------------------------------------- bottom bar */
+#bottom { position: absolute; left: 1.4rem; right: 1.4rem; bottom: 0.85rem; display: flex; align-items: flex-end; }
+#bottom .side { display: flex; gap: 0.3rem; align-items: center; height: 2rem; flex: none; }
+#bottom .mid { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.btn { height: 2rem; padding: 0 0.7rem; border-radius: 0.65rem; font-size: 0.6rem; color: #3e4c56; display: inline-flex; align-items: center; gap: 0.45rem; }
+.btn.icon { width: 2rem; padding: 0; justify-content: center; font-size: 0.8rem; }
+.btn.on { color: #2b7cb0; background: rgba(255, 255, 255, 0.86); }
+.btn .arrow { font-size: 0.85rem; line-height: 1; }
+#skip.hidden { display: none; }
+#chapters { display: flex; gap: 0.1rem; padding: 0.28rem; border-radius: 1.3rem; margin-bottom: 0.35rem; }
+#chapters button { height: 2rem; padding: 0 0.78rem; border-radius: 0.95rem; font-size: 0.64rem; color: #3d4b55; display: inline-flex; align-items: center; transition: background 0.3s, color 0.3s; }
+#chapters button i { font-style: normal; font-size: 0.48rem; color: #a6b0b8; margin-right: 0.42rem; letter-spacing: 0.02em; }
+#chapters button.on { background: rgba(255, 255, 255, 0.95); color: #1f6c9b; box-shadow: 0 0.2rem 0.6rem rgba(30, 70, 110, 0.10); }
+#chapters button.on i { color: #7fb0cf; }
+#hint { height: 0.9rem; font-size: 0.55rem; color: #8592a0; letter-spacing: 0.03em; text-shadow: 0 0 0.6rem rgba(255, 255, 255, 0.8); }
+
+/* ---------------------------------------------------------------- overlays */
+#fade { position: absolute; inset: 0; background: #eef3f8; opacity: 0; pointer-events: none; }
+#veil { position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: radial-gradient(ellipse at center, rgba(235, 242, 248, 0) 35%, rgba(225, 235, 244, 0.55) 100%); }
+#loader { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem;
+  background: #eef3f7; transition: opacity 0.9s ease; pointer-events: auto; }
+#loader.done { opacity: 0; pointer-events: none; }
+#loader .bar { width: 12rem; height: 2px; background: rgba(40, 90, 130, 0.12); border-radius: 2px; overflow: hidden; }
+#loader .bar i { display: block; height: 100%; width: 0; background: #2c7fb2; transition: width 0.3s ease; }
+#loader .brand { position: static; transform: scale(1.4); }
+#info { position: absolute; right: 1.4rem; bottom: 4.2rem; width: 19rem; padding: 1.1rem 1.2rem; border-radius: 1.1rem; font-size: 0.68rem; line-height: 1.15rem; color: #4a5762;
+  transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: auto; }
+#info.hidden { opacity: 0; transform: translateY(0.5rem); pointer-events: none; }
+#info b { display: block; font-size: 0.78rem; color: #1f2c35; margin-bottom: 0.4rem; font-weight: 600; }
+#reopen { position: absolute; left: 1.5rem; top: 12.1rem; }
+#reopen.hidden { display: none; }
+body.capture #hint, body.capture .hs .dot::after { animation: none; }

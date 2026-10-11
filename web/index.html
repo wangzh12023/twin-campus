@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Twin Campus · Open-source 3D Digital Twin</title>
+  <meta name="description" content="Open-source real-time 3D digital-twin campus built with Blender scripts and three.js." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 120 96%27%3E%3Crect x=%274%27 y=%278%27 width=%2760%27 height=%2760%27 rx=%2713%27 fill=%27%231b6a98%27/%3E%3Crect x=%2740%27 y=%2728%27 width=%2760%27 height=%2760%27 rx=%2713%27 fill=%27%2358a8cf%27/%3E%3C/svg%3E" />
+</head>
+<body>
+  <canvas id="gl" tabindex="0"></canvas>
+  <div id="hud">
+    <div id="hotspots"></div>
+    <div class="brand" id="brand"></div>
+    <button class="lang glass" id="lang"><em data-l="en">EN</em> / <em data-l="zh">中</em></button>
+
+    <aside class="panel glass hidden" id="panel">
+      <button class="close" id="panelClose" aria-label="close">✕</button>
+      <div class="eyebrow" id="pEyebrow"></div>
+      <h1 id="pTitle"></h1>
+      <p id="pBody"></p>
+      <div id="pAction"></div>
+      <div class="foot" id="pFoot"></div>
+    </aside>
+    <button class="btn glass hidden" id="reopen">☰</button>
+
+    <div id="bottom">
+      <div class="side">
+        <button class="btn glass" id="back"><span class="arrow">⟵</span><span data-t="back"></span></button>
+        <button class="btn glass hidden" id="skip"><span class="arrow">⇥</span><span data-t="skip"></span></button>
+      </div>
+      <div class="mid">
+        <nav id="chapters" class="glass"></nav>
+        <div id="hint"></div>
+      </div>
+      <div class="side">
+        <button class="btn glass" id="story" data-t="story"></button>
+        <button class="btn glass" id="mode"></button>
+        <button class="btn glass icon" id="infoBtn" aria-label="info">ⓘ</button>
+        <button class="btn glass icon" id="fsBtn" aria-label="fullscreen">⛶</button>
+      </div>
+    </div>
+    <div class="glass hidden" id="info"></div>
+    <div id="veil"></div>
+    <div id="fade"></div>
+    <div id="loader"><div class="brand" id="brand2"></div><div class="bar"><i id="loadbar"></i></div></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
